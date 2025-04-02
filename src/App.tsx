@@ -1,26 +1,23 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from 'react-router-dom';
+import { Login } from './pages/Login';
+import { Dashboard } from './components/Dashboard/Dashboard';
+import { PrivateRoute } from './components/PrivateRoute';
+import { BookList } from './pages/BookList';
+import { EditBook } from './pages/EditBook';
 
-function App() {
+export const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+    <Routes>
+      <Route path="/" element={<Login />} />
 
-export default App;
+      <Route element={<PrivateRoute />}>
+        <Route path='/dashboard' element={<Dashboard />} >
+          <Route path='books' element={<BookList />} />
+          <Route index element={<BookList />} />
+          <Route path='books/edit/:id' element={<EditBook />} />
+        </Route>
+      </Route>
+    </Routes>
+  );
+};
