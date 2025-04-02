@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, message, Space, Table, Popconfirm, Image } from "antd";
+import { Button, message, Space, Table, Popconfirm, Image, Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { api } from "../services/api";
+
+const { Search } = Input;
 
 interface Book {
     id: number;
@@ -13,6 +15,7 @@ interface Book {
 
 export const BookList: React.FC = () => {
     const [books, setBooks] = useState<Book[]>([]);
+    const [filteredBooks, setFilteredBooks] = useState<Book[]>([]);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
@@ -21,11 +24,22 @@ export const BookList: React.FC = () => {
         try {
             const response = await api.get("/books");
             setBooks(response.data);
+            setFilteredBooks(response.data); // 👈 инициализируем фильтр
         } catch {
             message.error("Не удалось загрузить книги");
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleSearch = (value: string) => {
+        const lower = value.toLowerCase();
+        const filtered = books.filter(
+            (book) =>
+                book.title.toLowerCase().includes(lower) ||
+                book.author.toLowerCase().includes(lower)
+        );
+        setFilteredBooks(filtered);
     };
 
     const handleDelete = async (id: number) => {
@@ -103,16 +117,21 @@ export const BookList: React.FC = () => {
 
     return (
         <>
-            <Button
-                type="primary"
-                style={{ marginBottom: 16 }}
-                onClick={() => navigate("/dashboard/books/add")}
-            >
-                Добавить книгу
-            </Button>
+            <Space style={{ marginBottom: 16, width: "100%", justifyContent: "space-between" }}>
+                <Search
+                    placeholder="Поиск по названию или автору"
+                    allowClear
+                    enterButton="Поиск"
+                    onSearch={handleSearch}
+                    style={{ maxWidth: 400 }}
+                />
+                <Button type="primary" onClick={() => navigate("/dashboard/books/add")}>
+                    Добавить книгу
+                </Button>
+            </Space>
 
             <Table
-                dataSource={books}
+                dataSource={filteredBooks}
                 columns={columns}
                 rowKey="id"
                 loading={loading}

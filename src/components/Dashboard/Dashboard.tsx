@@ -38,12 +38,12 @@ export const Dashboard: React.FC = () => {
                         {
                             key: "/dashboard/users",
                             icon: <UserOutlined />,
-                            label: <Link to="/dashboard/users">Пользователи</Link>,
+                            label: <Link to="">Пользователи</Link>,
                         },
                         {
                             key: "/dashboard/analytics",
                             icon: <BarChartOutlined />,
-                            label: <Link to="/dashboard/analytics">Аналитика</Link>,
+                            label: <Link to="">Аналитика</Link>,
                         },
                     ]}
                 />
